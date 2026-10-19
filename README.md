@@ -22,9 +22,10 @@ and Movie palette, and your portrait in every theme (placeholder until you add y
 (Open Graph / Twitter images), SEO metadata, sitemap and robots, error pages, security headers, CI and a deployment
 guide. See `DEPLOY.md`.
 
-**Latest (this ZIP):** live website previews inside the project dialogs, the YantraStack and English Speaking Tutorial
-projects, a rewritten About, Experience and Skills, education shown the same way for all three stages, the Adobe mark
-on the certifications, a real scroll-down button, and a few running jokes.
+**Latest (this ZIP):** live website previews with a "blocked site" fallback, the real YantraStack and English Daily
+projects, keyboard shortcuts and an easter egg on the home page, an automated accessibility check (axe-core) with the two
+real bugs it found fixed, `three` pinned to 0.182.0 (newer versions print a deprecation warning from react-three-fiber),
+and the dev-console noise removed.
 
 All three profiles are fully built. What is left is polish (easter eggs, optional sound).
 
@@ -43,7 +44,7 @@ npm install
 npm run dev      # http://localhost:3000
 npm run build    # production build
 npm run typecheck
-npm test         # unit + component tests (vitest, 187 tests)
+npm test         # unit + component tests (vitest, 214 tests)
 ```
 
 Requires Node 20+.
@@ -67,15 +68,15 @@ Desktop / Mobile toggle and an "Open in a new tab" link), instead of a static sc
 dialog opens.
 
 - A project is previewed when it has a live `https` link in `content/projects.ts` (`links.live`). Set `embed: false` to
-  switch it off (this portfolio does, so it never frames itself), or add a `previewNote` to explain in words when there
-  is nothing to embed (planned projects, links not available yet).
-- **YantraStack needs its live URL**: open `content/projects.ts`, find the `yantrastack` entry and add
-  `links: { live: "https://..." }`. The preview and the security allow-list switch on automatically.
-- The site's Content-Security-Policy only allows framing the origins of those project links
-  (`lib/embed.ts` feeds `next.config.ts`), and the iframe is sandboxed. Nothing else can be embedded.
-- **A framed site must allow it.** If a project site sends `X-Frame-Options: DENY/SAMEORIGIN` or a CSP
-  `frame-ancestors` that excludes `https://ashishrajbhagat.dev`, the browser shows "refused to connect" inside the frame
-  (the "Open in a new tab" link is always there as a fallback). See `DEPLOY.md` for the one-line fix on your own sites.
+  switch it off (this portfolio does, so it never frames itself), or add a `previewNote` to explain in words.
+- **A site can only be shown in a frame if it allows it.** If a project site sends `X-Frame-Options: DENY/SAMEORIGIN`
+  or a CSP `frame-ancestors` that excludes `https://ashishrajbhagat.dev`, browsers refuse to display it.
+- `/api/embed-check` (a small server route, cached for an hour) reads each project site's headers and works this out.
+  When a site blocks framing, the dialog says so and offers a clear "Open ... in a new tab" button, plus the exact
+  header responsible, instead of showing an empty frame. See `DEPLOY.md` for the one-line header fix on your own sites.
+- The site's Content-Security-Policy only allows framing the origins of those project links (`lib/embed.ts` feeds
+  `next.config.ts`; custom domains also get their `www` / apex twin because of redirects), and the iframe is sandboxed.
+- **Restart `npm run dev` after changing project links**: the security headers are read when the server starts.
 
 ## Sharing, SEO and security
 
@@ -243,8 +244,8 @@ Anything flagged `dummy: true` in `content/` shows an amber "placeholder" badge 
 Already real: experience, education (with the earlier schooling), certifications with their dates, skills list,
 contact email and all five social links, photos, resume PDF, and the AEM Tutorial project.
 
-- [ ] YantraStack's live URL (`projects.ts`), and check the YantraStack, Udaan and English Speaking Tutorial
-      descriptions: they are educated guesses
+- [ ] Check the Udaan project's feature list (`projects.ts`): it is an educated guess. YantraStack and English Daily
+      are written from their live sites
 - [ ] Skill levels (`skills.ts`) are guesses used for the visual bars: adjust or remove them
 - [ ] Coursework list and the Intermediate / Matriculation write-ups in `education.ts` are generic: edit freely
 - [ ] Fun facts and the joke reviewers are placeholders: keep only what is true and what you like

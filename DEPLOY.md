@@ -65,7 +65,10 @@ framing, allow this portfolio explicitly:
 - Next.js app (`next.config.js`): return the same header from `headers()`.
 
 Each project's origin also has to be in this site's own allow-list: that happens automatically from the `links.live` URLs in
-`content/projects.ts` (see `lib/embed.ts`).
+`content/projects.ts` (see `lib/embed.ts`). To see which of your sites currently block framing, open
+`https://ashishrajbhagat.dev/api/embed-check` after deploying: every project reports `embeddable` and, if not, the exact header
+(`X-Frame-Options` or `frame-ancestors`) that blocks it. Sites on other hosts (for example a custom-domain site on shared
+hosting) need the equivalent header set in that host's own configuration, such as `.htaccess` on Apache.
 
 ## Optional: privacy-friendly analytics
 Not included by default. To add Vercel Web Analytics: `npm i @vercel/analytics`, then render `<Analytics />` from

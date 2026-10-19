@@ -40,11 +40,19 @@ describe("embedOrigins", () => {
     expect(origins).toEqual(["https://a.vercel.app", "https://b.vercel.app"]);
   });
 
+  it("adds the www / apex twin for custom domains, but not for vercel.app subdomains", () => {
+    expect(embedOrigins([{ links: { live: "https://yantrastack.com/" } }])).toEqual(["https://yantrastack.com", "https://www.yantrastack.com"]);
+    expect(embedOrigins([{ links: { live: "https://www.example.org" } }])).toEqual(["https://www.example.org", "https://example.org"]);
+    expect(embedOrigins([{ links: { live: "https://a.vercel.app" } }])).toEqual(["https://a.vercel.app"]);
+  });
+
   it("covers every real project that has a live site, and not the portfolio itself", () => {
     const origins = embedOrigins();
     expect(origins).toContain("https://aem-tutorial.vercel.app");
     expect(origins).toContain("https://udaan-library.vercel.app");
     expect(origins).not.toContain(new URL(site.url).origin);
-    expect(origins.length).toBe(projects.filter((p) => embedUrl(p)).length);
+    expect(origins).toContain("https://yantrastack.com");
+    expect(origins).toContain("https://english-daily-iota.vercel.app");
+    for (const project of projects.filter((p) => embedUrl(p))) expect(origins).toContain(new URL(embedUrl(project)!).origin);
   });
 });

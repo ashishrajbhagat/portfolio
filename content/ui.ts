@@ -6,7 +6,8 @@ export const ui = {
     manage: "Manage Profiles",
     done: "Done",
     lastWatched: "Last watched",
-    footnote: "Best on a larger screen. Phones work too.",
+    footnote: "Best on a larger screen. Phones work too. Tip: press 1, 2 or 3 to choose a profile.",
+    konamiToast: "Cheat code accepted: +30 lives, 0 bugs. (They were features.)",
   },
   addProfile: {
     name: "Add Profile",

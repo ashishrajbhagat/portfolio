@@ -3,10 +3,10 @@
 import "@fontsource-variable/jetbrains-mono";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useReducedMotion } from "framer-motion";
 import ContentPreview from "@/components/ContentPreview";
 import type { Profile } from "@/content/profiles";
 import { useProfileStore } from "@/lib/profile-store";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import {
   BOOT_SESSION_KEY, defaultSettings, loadSettings, saveSettings,
 } from "@/lib/terminal/settings";
@@ -24,7 +24,7 @@ type Phase = "init" | "boot" | "session";
  */
 export default function TerminalExperience({ profile }: { profile: Profile }) {
   const router = useRouter();
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const setLast = useProfileStore((s) => s.setLast);
 
   const [phase, setPhase] = useState<Phase>("init");

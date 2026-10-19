@@ -16,7 +16,7 @@ export const about = {
     },
     {
       tone: "funny" as Tone,
-      text: "Outside my day job, I build web platforms for clients: YantraStack, a whole toolbox of PDF, image and developer tools in one place, and a library management system on Next.js and Supabase, where I learned that the hardest bug is always the one a member finds at the front desk on a Monday morning.",
+      text: "Outside my day job, I build web products for clients: YantraStack, a suite of PDF, image and developer tools that run entirely in the browser; English Daily, a speaking-practice app for Hindi speakers; and a library management system on Next.js and Supabase, where I learned that the hardest bug is always the one a member finds at the front desk on a Monday morning.",
     },
     {
       tone: "serious" as Tone,

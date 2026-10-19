@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { bannerLines } from "@/lib/terminal/ascii";
 import { site } from "@/content/site";
 
 /** Types `text` out character by character. Renders instantly under reduced motion. */
 export function Typewriter({ text, speed = 22, startDelay = 250 }: { text: string; speed?: number; startDelay?: number }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const [count, setCount] = useState(reduced ? text.length : 0);
 
   useEffect(() => {
@@ -33,10 +33,12 @@ export function Typewriter({ text, speed = 22, startDelay = 250 }: { text: strin
     };
   }, [reduced, text, speed, startDelay]);
 
+  // The full sentence is available to screen readers at once; the typed-out copy is purely visual.
   return (
-    <span aria-label={text}>
+    <>
+      <span className="sr-only">{text}</span>
       <span aria-hidden>{text.slice(0, count)}</span>
-    </span>
+    </>
   );
 }
 

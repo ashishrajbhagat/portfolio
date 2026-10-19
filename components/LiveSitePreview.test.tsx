@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { resetEmbedStatus } from "@/lib/embed-status";
 import LiveSitePreview from "./LiveSitePreview";
 import ProjectPreview from "./ProjectPreview";
 import { projects } from "@/content/projects";
@@ -64,23 +65,54 @@ describe("LiveSitePreview", () => {
 });
 
 describe("ProjectPreview", () => {
-  beforeEach(() => cleanup());
+  beforeEach(() => {
+    cleanup();
+    resetEmbedStatus();
+  });
+  afterEach(() => vi.unstubAllGlobals());
   const byId = (id: string) => projects.find((p) => p.id === id)!;
+  const stubVerdicts = (body: unknown, ok = true) =>
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok, json: async () => body }));
 
-  it("embeds the live site for a project with a live link", () => {
+  it("embeds the live site when the server says it allows framing", async () => {
+    stubVerdicts({ "aem-tutorial": { embeddable: true } });
     render(<ProjectPreview project={byId("aem-tutorial")} />);
     expect(screen.getByTitle("AEM Tutorial: live preview")).toBeTruthy();
+    await act(async () => {});
+    expect(screen.getByTitle("AEM Tutorial: live preview")).toBeTruthy();
+  });
+
+  it("swaps the iframe for a clear explanation and an 'open' link when the site blocks framing", async () => {
+    stubVerdicts({ "aem-tutorial": { embeddable: false, reason: "X-Frame-Options: deny" } });
+    render(<ProjectPreview project={byId("aem-tutorial")} />);
+    await screen.findByText(/can't be shown inside another page/);
+    expect(document.querySelector("iframe")).toBeNull();
+    const link = screen.getByRole("link", { name: /Open aem-tutorial.vercel.app/ });
+    expect(link.getAttribute("href")).toBe("https://aem-tutorial.vercel.app/");
+    expect(link.getAttribute("rel")).toBe("noopener noreferrer");
+    expect(screen.getByText(/X-Frame-Options: deny/)).toBeTruthy();
+  });
+
+  it("still tries the preview when the check cannot run", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+    render(<ProjectPreview project={byId("aem-tutorial")} />);
+    await act(async () => {});
+    expect(screen.getByTitle("AEM Tutorial: live preview")).toBeTruthy();
+  });
+
+  it("only asks the server once for several projects", async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, json: async () => ({}) });
+    vi.stubGlobal("fetch", fetchMock);
+    render(<ProjectPreview project={byId("aem-tutorial")} />);
+    render(<ProjectPreview project={byId("yantrastack")} />);
+    await act(async () => {});
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(fetchMock).toHaveBeenCalledWith("/api/embed-check");
   });
 
   it("never frames this portfolio inside itself: it explains instead", () => {
     render(<ProjectPreview project={byId("portfolio")} />);
     expect(document.querySelector("iframe")).toBeNull();
     expect(screen.getByText("You're looking at this one right now.")).toBeTruthy();
-  });
-
-  it("explains when a project has no live link yet", () => {
-    render(<ProjectPreview project={byId("english-tutorial")} />);
-    expect(document.querySelector("iframe")).toBeNull();
-    expect(screen.getByText(/Still in the planning stage/)).toBeTruthy();
   });
 });

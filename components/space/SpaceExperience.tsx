@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { projects, type Project } from "@/content/projects";
 import type { Profile } from "@/content/profiles";
-import { usePrefersReducedMotion } from "@/lib/movie/reduced-motion";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { useProfileStore } from "@/lib/profile-store";
 import { resetSpace } from "@/lib/space/store";
 import Hud from "./Hud";

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/bricolage-grotesque";
 import "@fontsource-variable/instrument-sans";
 import "./globals.css";
+import DevConsoleFilter from "@/components/DevConsoleFilter";
 import { site, socialLinks } from "@/content/site";
 import { jsonLdScript, personJsonLd } from "@/lib/seo";
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
+        <DevConsoleFilter />
         {children}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(personJsonLd()) }} />
       </body>

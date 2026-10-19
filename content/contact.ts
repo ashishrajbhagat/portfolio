@@ -9,7 +9,6 @@ export const resume = {
     "Experience, skills and education in one clean page. No 'rockstar', no 'ninja', no 'synergy'.",
   fileLabel: "Download resume (PDF)",
   url: site.resumeUrl,
-  dummy: true, // TODO: add the PDF at public/resume.pdf
 };
 
 export const contact = {

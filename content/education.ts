@@ -60,7 +60,7 @@ export const educationEntries: EducationEntry[] = [
     period: "2011 – 2013",
     summary:
       "Where it started. Two foundation years, learning how to learn, and getting through the first big board exam of the journey.",
-    highlights: ["Mathematics", "Science", "Social Science", "English", "Hindi"],
+    highlights: ["Mathematics", "Science", "Social Science", "English", "Sanskrit"],
     dummy: true,
   },
 ];

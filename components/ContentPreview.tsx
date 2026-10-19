@@ -193,7 +193,7 @@ export default function ContentPreview({ theme }: { theme: ThemeKey }) {
         <p className="font-display text-xl font-semibold">{resume.headline}</p>
         <p className="mt-2 max-w-prose text-neutral-400">{resume.description}</p>
         <p className="mt-4 inline-block rounded border border-white/25 px-4 py-2 text-sm">
-          {resume.fileLabel} → {resume.url}{resume.dummy && <Placeholder />}
+          {resume.fileLabel} → {resume.url}
         </p>
       </div>
     ),

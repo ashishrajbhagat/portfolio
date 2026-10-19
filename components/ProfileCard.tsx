@@ -21,6 +21,8 @@ interface ProfileCardProps {
   onHover: (active: boolean) => void;
   variants: Variants;
   ariaLabel?: string;
+  /** Keyboard shortcut that activates this card, announced to assistive tech. */
+  shortcut?: string;
   /** Visually quieter treatment for the "Add Profile" tile. */
   muted?: boolean;
 }
@@ -35,7 +37,7 @@ function PencilIcon() {
 }
 
 export default function ProfileCard({
-  name, caption, pitch, accent, avatar, state, editing, isLast, lastLabel, reduced, onActivate, onHover, variants, ariaLabel, muted = false,
+  name, caption, pitch, accent, avatar, state, editing, isLast, lastLabel, reduced, onActivate, onHover, variants, ariaLabel, shortcut, muted = false,
 }: ProfileCardProps) {
   const target =
     state === "selected"
@@ -54,6 +56,7 @@ export default function ProfileCard({
           onMouseLeave={() => onHover(false)}
           onFocus={() => onHover(true)}
           onBlur={() => onHover(false)}
+          aria-keyshortcuts={shortcut}
           aria-label={ariaLabel ?? (editing ? `Edit profile ${name}` : `Watch as ${name}`)}
           style={{ "--accent": accent } as CSSProperties}
           className="group block w-full text-left outline-none"

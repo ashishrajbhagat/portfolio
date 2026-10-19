@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { profiles } from "@/content/profiles";
 import { site } from "@/content/site";
 import { ui } from "@/content/ui";
@@ -26,8 +26,9 @@ vi.hoisted(() => {
   });
 });
 
+const push = vi.hoisted(() => vi.fn());
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ push: () => {}, prefetch: () => {} }),
+  useRouter: () => ({ push, prefetch: () => {} }),
 }));
 
 import ProfileGrid from "./ProfileGrid";
@@ -49,6 +50,7 @@ describe("ProfileGrid hydration", () => {
 });
 
 describe("ProfileGrid", () => {
+  beforeEach(() => push.mockClear());
   afterEach(cleanup);
 
   it("offers one card per profile plus the Add Profile tile", () => {
@@ -72,5 +74,28 @@ describe("ProfileGrid", () => {
     await user.click(screen.getByRole("button", { name: ui.addProfile.name }));
     expect(await screen.findByRole("status")).toBeTruthy();
     expect(screen.getByRole("status").textContent).toBe(ui.addProfile.toast);
+  });
+
+  it("lets the number keys 1, 2 and 3 pick a profile", async () => {
+    render(createElement(ProfileGrid));
+    fireEvent.keyDown(window, { key: "2" });
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/watch/developer"), { timeout: 2000 });
+    expect(screen.getByRole("button", { name: "Watch as Developer" }).getAttribute("aria-keyshortcuts")).toBe("2");
+  });
+
+  it("ignores the number keys when a modifier is held or while typing in a field", async () => {
+    render(createElement("div", null, createElement(ProfileGrid), createElement("input", { "aria-label": "field" })));
+    fireEvent.keyDown(window, { key: "1", ctrlKey: true });
+    fireEvent.keyDown(screen.getByLabelText("field"), { key: "1" });
+    await new Promise((resolve) => setTimeout(resolve, 400)); // longer than the 150 ms hand-off delay under reduced motion
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("rewards the Konami code with a cheat-code message", async () => {
+    render(createElement(ProfileGrid));
+    for (const key of ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"]) {
+      fireEvent.keyDown(window, { key });
+    }
+    expect((await screen.findByRole("status")).textContent).toBe(ui.profileScreen.konamiToast);
   });
 });

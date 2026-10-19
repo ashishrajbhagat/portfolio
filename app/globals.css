@@ -730,3 +730,19 @@ html.lenis body {
   .scroll-wheel, .scroll-chevron { animation: none; }
   .scroll-wheel { opacity: 1; }
 }
+
+/* Easter egg confetti (home page) */
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 1px;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.3, 0.2, 0.4, 1);
+  animation-fill-mode: forwards;
+}
+@keyframes confetti-fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .confetti-piece { display: none; }
+}

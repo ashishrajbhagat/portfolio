@@ -4,7 +4,7 @@ import "@fontsource-variable/fraunces";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Profile } from "@/content/profiles";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/movie/gsap";
-import { usePrefersReducedMotion } from "@/lib/movie/reduced-motion";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { INTRO_SESSION_KEY } from "@/lib/movie/storage-keys";
 import { useProfileStore } from "@/lib/profile-store";
 import { readStorage, writeStorage } from "@/lib/terminal/storage";

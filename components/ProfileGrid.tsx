@@ -3,19 +3,22 @@
 import "@fontsource-variable/fraunces";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AnimatePresence, MotionConfig, motion, useReducedMotion, type Variants } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion, type Variants } from "framer-motion";
+import Confetti from "@/components/Confetti";
 import Portrait from "@/components/Portrait";
 import { profiles } from "@/content/profiles";
 import { site } from "@/content/site";
 import type { ProfileSlug } from "@/content/types";
 import { ui } from "@/content/ui";
+import { createKonami } from "@/lib/konami";
 import { useLastProfile, useProfileStore } from "@/lib/profile-store";
+import { usePrefersReducedMotion } from "@/lib/reduced-motion";
 import { AddAvatar, avatarBySlug } from "./avatars";
 import ProfileCard, { type CardState } from "./ProfileCard";
 
 export default function ProfileGrid() {
   const router = useRouter();
-  const reduced = !!useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const last = useLastProfile();
   const setLast = useProfileStore((s) => s.setLast);
 
@@ -23,17 +26,50 @@ export default function ProfileGrid() {
   const [hovered, setHovered] = useState<ProfileSlug | null>(null);
   const [editing, setEditing] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [confetti, setConfetti] = useState(false);
   const toastTimer = useRef<number | null>(null);
   const navTimer = useRef<number | null>(null);
   const toastIndex = useRef(0);
 
   useEffect(() => {
     profiles.forEach((p) => router.prefetch(`/watch/${p.slug}`));
-    return () => {
+  }, [router]);
+
+  // Timers are cleared only on unmount. (Clearing them whenever `router` changes would cancel a pending navigation.)
+  useEffect(
+    () => () => {
       if (toastTimer.current) window.clearTimeout(toastTimer.current);
       if (navTimer.current) window.clearTimeout(navTimer.current);
+    },
+    []
+  );
+
+  // Keyboard: 1, 2, 3 pick a profile, and the Konami code is an easter egg. Ignored while typing in a field.
+  const chooseRef = useRef(choose);
+  useEffect(() => {
+    chooseRef.current = choose;
+  });
+  useEffect(() => {
+    let confettiTimer: number | undefined;
+    const konami = createKonami(() => {
+      showToast(ui.profileScreen.konamiToast);
+      setConfetti(true);
+      window.clearTimeout(confettiTimer);
+      confettiTimer = window.setTimeout(() => setConfetti(false), 3600);
+    });
+    const onKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if ((event.target as HTMLElement | null)?.closest?.("input, textarea, select, [contenteditable='true']")) return;
+      konami(event.key);
+      const index = ["1", "2", "3"].indexOf(event.key);
+      if (index !== -1 && profiles[index]) chooseRef.current(profiles[index].slug);
     };
-  }, [router]);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      window.clearTimeout(confettiTimer);
+    };
+  }, []);
 
   function showToast(message: string) {
     setToast(message);
@@ -137,11 +173,12 @@ export default function ProfileGrid() {
             animate="show"
             className="mt-14 grid w-full max-w-5xl grid-cols-2 gap-x-5 gap-y-10 sm:grid-cols-4 sm:gap-x-7"
           >
-            {profiles.map((p) => {
+            {profiles.map((p, index) => {
               const Avatar = avatarBySlug[p.slug];
               return (
                 <ProfileCard
                   key={p.slug}
+                  shortcut={String(index + 1)}
                   name={p.name}
                   caption={p.caption}
                   pitch={p.pitch}
@@ -193,6 +230,8 @@ export default function ProfileGrid() {
         <p className="text-center text-xs text-neutral-600">
           {ui.profileScreen.footnote} · {site.domain}
         </p>
+
+        {confetti && !reduced && <Confetti />}
 
         <AnimatePresence>
           {selectedProfile && (

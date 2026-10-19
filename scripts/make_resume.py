@@ -119,13 +119,11 @@ def build(path):
 
     story += [P("PROJECTS", "h"), rule(), Spacer(1, 5)]
     story += [P("AEM Tutorial \u2013 aem-tutorial.vercel.app", "job"),
-              P("Free learning hub for Adobe Experience Manager", "when"),
-              B("Practical guides from fundamentals to Dispatcher, workflows, security and headless delivery"),
-              B("Covers AEM as a Cloud Service and 6.5; open source on GitHub"),
-              Spacer(1, 6),
-              P("YantraStack (client work)", "job"),
-              P("A toolbox of PDF, image and developer tools in one place", "when"),
-              Spacer(1, 2),
+              P("Free learning hub for Adobe Experience Manager: fundamentals to Dispatcher, workflows and headless; AEM Cloud Service and 6.5", "when"),
+              P("YantraStack \u2013 yantrastack.com (client work)", "job"),
+              P("Free PDF, image and developer tools that run entirely in the browser", "when"),
+              P("English Daily (client work)", "job"),
+              P("English speaking practice app for Hindi speakers: roadmaps, speaking tasks, quizzes, XP and streaks", "when"),
               P("Library management platform (client work)", "job"),
               P("Role-based, multi-portal web app on Next.js 14 and Supabase", "when")]
 

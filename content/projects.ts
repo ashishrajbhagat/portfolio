@@ -21,9 +21,7 @@ export interface Project extends Dummyable {
 
 /**
  * Tone: SERIOUS descriptions, FUNNY taglines.
- * AEM Tutorial, Udaan and this portfolio are real; the Udaan feature list is an educated guess and the English
- * Speaking Tutorial is a planned future project (shown as "Coming Soon").
- * Replace the placeholder screenshots in public/placeholders/ with real ones.
+ * All five are real and live. The Udaan feature list is an educated guess (the others come from the live sites).
  */
 export const projects: Project[] = [
   {
@@ -49,21 +47,36 @@ export const projects: Project[] = [
     title: "YantraStack",
     tagline: "Every everyday tool, in one stack.",
     description:
-      "A client website that brings a whole toolbox together in one place: PDF tools, image tools and developer tools, ready to use right in the browser.",
+      "A client website that brings a whole toolbox together: free PDF tools, image tools and developer utilities that run entirely in the browser, so files never leave the user's device.",
     highlights: [
-      "PDF tools for everyday document tasks.",
-      "Image tools for quick edits and conversions.",
-      "Developer tools for the small jobs that come up every day.",
-      "One clean, fast interface for the whole toolbox.",
+      "Privacy-first: files are processed locally in the browser and never uploaded.",
+      "PDF tools, image tools and developer utilities in one suite, with a built-in tool search.",
+      "Always free, with no account and no watermarks.",
+      "An articles section explaining the techniques behind the tools.",
     ],
     stack: [],
     status: "Live",
-    // TODO: add the live URL (links: { live: "https://..." }) and the live preview switches on automatically.
-    links: {},
-    previewNote: "The live preview link is coming soon.",
+    links: { live: "https://yantrastack.com/" },
     tone: "serious",
     featured: true,
-    dummy: true,
+  },
+  {
+    id: "english-daily",
+    title: "English Daily",
+    tagline: "English speaking practice, a little every day.",
+    description:
+      "A web app for practising spoken English, made for Hindi speakers and built for a client. Learners pick a level and a roadmap, then work through small daily tasks: speaking phrases out loud, free talk, dictation, words, grammar and quizzes, earning XP and keeping a daily streak.",
+    highlights: [
+      "Level-based roadmaps so every learner starts in the right place.",
+      "Speaking-first practice: say a phrase out loud, 60 seconds of free talk, and dictation.",
+      "Words, grammar lessons and quizzes, with a notebook that saves mistakes for review.",
+      "XP, daily streaks and badges to build the habit, in light and dark themes.",
+    ],
+    stack: [],
+    status: "Live",
+    links: { live: "https://english-daily-iota.vercel.app/" },
+    tone: "serious",
+    featured: true,
   },
   {
     id: "udaan-library",
@@ -79,7 +92,7 @@ export const projects: Project[] = [
     ],
     stack: ["Next.js 14", "Supabase", "TypeScript", "Tailwind CSS", "Vercel"],
     status: "Live",
-    links: { live: "https://udaan-library.vercel.app" },
+    links: { live: "https://udaan-library.vercel.app/" },
     tone: "serious",
     featured: true,
     dummy: true,
@@ -102,24 +115,5 @@ export const projects: Project[] = [
     previewNote: "You're looking at this one right now.",
     tone: "funny",
     featured: true,
-  },
-  {
-    id: "english-tutorial",
-    title: "English Speaking Tutorial",
-    tagline: "Learn to speak English with confidence, one conversation at a time.",
-    description:
-      "A planned learning platform for spoken English, to be built for a client. The focus is speaking practice: guided lessons, real-life conversation scenarios and progress tracking, so learners practise out loud instead of only reading rules.",
-    highlights: [
-      "Speaking-first lessons built around everyday conversations.",
-      "Guided practice with pronunciation and fluency tips.",
-      "Progress tracking so learners can see themselves improving.",
-      "Simple enough for first-time learners, and designed to work well on a phone.",
-    ],
-    stack: ["Next.js", "Supabase"],
-    status: "Prototype",
-    links: {},
-    previewNote: "Still in the planning stage. Check back soon.",
-    tone: "serious",
-    dummy: true,
   },
 ];

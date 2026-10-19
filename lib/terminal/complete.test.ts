@@ -31,6 +31,6 @@ describe("complete", () => {
     expect(complete("theme am", [], names)?.value).toBe("theme amber ");
   });
   it("completes project ids for the projects command", () => {
-    expect(complete("projects en", [], names)?.value).toBe("projects english-tutorial ");
+    expect(complete("projects en", [], names)?.value).toBe("projects english-daily ");
   });
 });

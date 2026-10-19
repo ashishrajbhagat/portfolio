@@ -33,13 +33,14 @@ describe("content rules", () => {
 });
 
 describe("projects", () => {
-  it("lists AEM Tutorial, YantraStack, the library system, this portfolio and the planned English tutorial", () => {
-    expect(projects.map((p) => p.id)).toEqual(["aem-tutorial", "yantrastack", "udaan-library", "portfolio", "english-tutorial"]);
+  it("lists AEM Tutorial, YantraStack, English Daily, the library system and this portfolio", () => {
+    expect(projects.map((p) => p.id)).toEqual(["aem-tutorial", "yantrastack", "english-daily", "udaan-library", "portfolio"]);
   });
 
-  it("shows this portfolio as live and the English tutorial as coming soon", () => {
-    expect(projects.find((p) => p.id === "portfolio")?.status).toBe("Live");
-    expect(projects.find((p) => p.id === "english-tutorial")?.status).toBe("Prototype");
+  it("shows every project as live, with real links for the ones that can be previewed", () => {
+    for (const project of projects) expect(project.status, project.id).toBe("Live");
+    expect(projects.find((p) => p.id === "yantrastack")?.links.live).toBe("https://yantrastack.com/");
+    expect(projects.find((p) => p.id === "english-daily")?.links.live).toBe("https://english-daily-iota.vercel.app/");
   });
 
   it("does not rely on static screenshots: the live site is previewed instead", () => {
@@ -66,6 +67,14 @@ describe("education", () => {
       expect(entry.highlights.length, entry.id).toBeGreaterThanOrEqual(5);
       expect(entry.period).toMatch(/^\d{4} – \d{4}$/);
     }
+  });
+});
+
+describe("education subjects", () => {
+  it("lists Sanskrit (not Hindi) for Matriculation", () => {
+    const matric = educationEntries.find((e) => e.id === "matriculation")!;
+    expect(matric.highlights).toContain("Sanskrit");
+    expect(matric.highlights).not.toContain("Hindi");
   });
 });
 
